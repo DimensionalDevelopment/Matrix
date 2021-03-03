@@ -8,15 +8,29 @@ apply plugin: "java"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+sourceSets {
+	testmod
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:21w08b"
 	mappings "net.fabricmc:yarn:21w08b+build.8:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.11.1"
+	testmodImplementation sourceSets.main.output
+	testmodCompileOnly sourceSets.main.compileClasspath
+	testmodRuntimeOnly sourceSets.main.runtimeClasspath
+	modRuntime("net.fabricmc.fabric-api:fabric-api:0.31.2+1.17") {
+		exclude module: "fabric-loader"
+	}
 }
 
 version = "1.0.0"
 archivesBaseName = "Matrix"
 group = "org.dimdev"
+
+license {
+	include '**/*.java'
+}
 
 processResources {
 	filesMatching("fabric.mod.json") {

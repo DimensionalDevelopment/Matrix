@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "version": "${version}",
+  "id": "matrix-test",
+  "name": "Matrix Test",
+  "description": "Testmod",
+  "entrypoints": {
+    "main": [
+      "org.dimdev.matrix.test.Test"
+    ]
+  }
+}

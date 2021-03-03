@@ -2,8 +2,9 @@ package org.dimdev.matrix;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Optional;
 
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -25,28 +26,34 @@ public class Matrix {
 	 *
 	 * @param clazz The class that should be scanned for registry entries.
 	 * @param registry The registry that entries should be registered to.
-	 * @param entryClass The class that each registry entry should be an instance of.
-	 * @param <T> The registry's container type.
 	 */
-	public static <T> void register(Class<?> clazz, Registry<T> registry, Class<T> entryClass) {
-		String modId = Optional.ofNullable(clazz.getAnnotation(Register.class)).orElseThrow(() -> new UnsupportedOperationException(clazz.getName() + " did not have the Register annotation!")).modid();
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static void register(Class<?> clazz, Registry<?> registry) {
+		Registrar registrar = clazz.getAnnotation(Registrar.class);
+		if (registrar == null) {
+			return;
+		}
+
+		String modid = registrar.modid();
+		Class<?> element = registrar.element();
+
 		Arrays.stream(clazz.getFields())
-				.filter(field -> {
-					int modifiers = field.getModifiers();
-					return Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers) && Modifier.isFinal(modifiers);
-				})
-				.filter(field -> field.isAnnotationPresent(RegistryEntry.class))
-				.filter(field -> entryClass.isAssignableFrom(field.getType()))
+				.filter(field -> field.isAnnotationPresent(RegistryEntry.class)
+						&& Modifier.isPublic(field.getModifiers())
+						&& Modifier.isStatic(field.getModifiers())
+						&& Modifier.isFinal(field.getModifiers())
+						&& element.isAssignableFrom(field.getType())
+				)
 				.forEach(field -> {
-					T value;
 					try {
-						//noinspection unchecked
-						value = (T) field.get(null);
+						Object value = field.get(null);
+						Registry.register((Registry) registry, new Identifier(modid, field.getAnnotation(RegistryEntry.class).value()), element.cast(value));
+						if (value instanceof BlockItem) {
+							Item.BLOCK_ITEMS.put(((BlockItem) value).getBlock(), (Item) value);
+						}
 					} catch (IllegalAccessException e) {
-						throw new AssertionError(e); // cant happen
+						throw new AssertionError(e);
 					}
-					Identifier id = new Identifier(modId, field.getAnnotation(RegistryEntry.class).value());
-					Registry.register(registry, id, value);
 				});
 	}
 }
