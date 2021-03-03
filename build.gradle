@@ -1,5 +1,6 @@
 plugins {
 	id "fabric-loom" version "0.6-SNAPSHOT"
+	id "org.cadixdev.licenser" version "0.5.0"
 }
 
 apply plugin: "java"
@@ -11,11 +12,11 @@ dependencies {
 	minecraft "com.mojang:minecraft:21w08b"
 	mappings "net.fabricmc:yarn:21w08b+build.8:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.11.1"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.2+1.17"
 }
 
 version = "1.0.0"
 archivesBaseName = "Matrix"
+group = "org.dimdev"
 
 processResources {
 	filesMatching("fabric.mod.json") {
@@ -23,6 +24,24 @@ processResources {
 	}
 
 	inputs.property "version", project.version
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+	def targetVersion = 8
+	if (JavaVersion.current().isJava9Compatible()) {
+		it.options.release.set(targetVersion)
+	}
+}
+
+java {
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
 }
 
 artifacts {

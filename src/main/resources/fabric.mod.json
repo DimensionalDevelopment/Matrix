@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "version": "${version}",
+  "id": "matrix",
+  "name": "Matrix",
+  "description": "Annotation based registration library"
+}
