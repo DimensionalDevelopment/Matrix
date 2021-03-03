@@ -1,32 +1,30 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "http://files.minecraftforge.net/maven" }
-    }
-    dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-    }
+plugins {
+	id "fabric-loom" version "0.6-SNAPSHOT"
 }
 
 apply plugin: "java"
-apply plugin: "net.minecraftforge.gradle.forge"
-
-group 'org.dimdev.matrix'
-archivesBaseName = 'matrix'
-version '1.0'
 
 sourceCompatibility = 1.8
-
-minecraft {
-    version "1.12.2-14.23.5.2768"
-    runDir "run"
-    mappings "stable_39"
-}
-
-repositories {
-    mavenCentral()
-}
+targetCompatibility = 1.8
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+	minecraft "com.mojang:minecraft:21w08b"
+	mappings "net.fabricmc:yarn:21w08b+build.8:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.11.1"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.2+1.17"
+}
+
+version = "1.0.0"
+archivesBaseName = "Matrix"
+
+processResources {
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+
+	inputs.property "version", project.version
+}
+
+artifacts {
+	archives jar
 }
