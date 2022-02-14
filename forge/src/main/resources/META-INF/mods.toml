@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[38,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "matrix"
+version = "${version}"
+displayName = "Matrix"
+authors = "Me!"
+description = '''
+Annotation based registration library
+'''
+#logoFile = ""
+
+[[dependencies.examplemod]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.18,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.examplemod]]
+modId = "architectury"
+mandatory = true
+versionRange = "[3.6.15,)"
+ordering = "AFTER"
+side = "BOTH"

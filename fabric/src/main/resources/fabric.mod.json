@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "matrix",
+  "version": "${version}",
+  "name": "Matrix",
+  "description": "Annotation based registration library",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/examplemod/icon.png",
+  "depends": {
+    "minecraft": ">=1.18",
+    "architectury": ">=3.6.15"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
