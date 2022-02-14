@@ -64,5 +64,7 @@ public class Matrix {
 						e.printStackTrace();
 					}
 				});
+
+		deferredRegister.register();
 	}
 }
