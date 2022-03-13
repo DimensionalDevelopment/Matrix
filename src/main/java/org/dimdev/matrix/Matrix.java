@@ -7,6 +7,9 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * An Annotation Based Registration Library.
@@ -28,8 +31,8 @@ public class Matrix {
 	 * @param registry The registry that entries should be registered to.
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static void register(Class<?> clazz, Registry<?> registry) {
-		Registrar registrar = clazz.getAnnotation(Registrar.class);
+	public static <T extends IForgeRegistryEntry<T>> void register(Class<?> target, Class<T> type) {
+		Registrar registrar = target.getAnnotation(Registrar.class);
 		if (registrar == null) {
 			return;
 		}
@@ -37,7 +40,10 @@ public class Matrix {
 		String modid = registrar.modid();
 		Class<?> element = registrar.element();
 
-		Arrays.stream(clazz.getFields())
+		DeferredRegister<T> deferredRegister = DeferredRegister.create(type, modid);
+		deferredRegister.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+		Arrays.stream(target.getFields())
 				.filter(field -> field.isAnnotationPresent(RegistryEntry.class)
 						&& Modifier.isPublic(field.getModifiers())
 						&& Modifier.isStatic(field.getModifiers())
@@ -46,8 +52,8 @@ public class Matrix {
 				)
 				.forEach(field -> {
 					try {
-						Object value = field.get(null);
-						Registry.register((Registry) registry, new Identifier(modid, field.getAnnotation(RegistryEntry.class).value()), element.cast(value));
+						T value = (T) field.get(null);
+						deferredRegister.register(field.getAnnotation(RegistryEntry.class).value(), () -> value);
 						if (value instanceof BlockItem) {
 							Item.BLOCK_ITEMS.put(((BlockItem) value).getBlock(), (Item) value);
 						}
