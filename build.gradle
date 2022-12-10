@@ -1,6 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.6-SNAPSHOT"
-	id "org.cadixdev.licenser" version "0.5.0"
+	id "fabric-loom" version "1.0-SNAPSHOT"
 }
 
 apply plugin: "java"
@@ -13,24 +12,20 @@ sourceSets {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:21w08b"
-	mappings "net.fabricmc:yarn:21w08b+build.8:v2"
-	modImplementation "net.fabricmc:fabric-loader:0.11.1"
+	minecraft "com.mojang:minecraft:1.19.3"
+	mappings "net.fabricmc:yarn:1.19.3+build.2:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.14.11"
 	testmodImplementation sourceSets.main.output
 	testmodCompileOnly sourceSets.main.compileClasspath
 	testmodRuntimeOnly sourceSets.main.runtimeClasspath
-	modRuntime("net.fabricmc.fabric-api:fabric-api:0.31.2+1.17") {
+	modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3") {
 		exclude module: "fabric-loader"
 	}
 }
 
-version = "1.0.0"
+version = "1.1.0"
 archivesBaseName = "Matrix"
 group = "org.dimdev"
-
-license {
-	include '**/*.java'
-}
 
 processResources {
 	filesMatching("fabric.mod.json") {
